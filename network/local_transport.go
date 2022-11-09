@@ -1,6 +1,9 @@
 package network
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type LocalTransport struct {
 	addr      NetAddr
@@ -26,6 +29,24 @@ func (t *LocalTransport) Connect(tr *LocalTransport) error {
 	defer t.lock.Unlock()
 
 	t.peers[tr.Addr()] = tr
+
+	return nil
+}
+
+func (t *LocalTransport) SendMessage(to NetAddr, payload []byte) error {
+	t.lock.RLock()
+	defer t.lock.RUnlock()
+
+	peer, ok := t.peers[to]
+
+	if !ok {
+		return fmt.Errorf("%s: could not send message to %s", t.addr, to)
+	}
+
+	peer.consumeCh <- RPC{
+		From:    t.addr,
+		Payload: payload,
+	}
 
 	return nil
 }
