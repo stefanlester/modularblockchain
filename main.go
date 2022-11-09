@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/stefanlester/Modular-Blockchain/network"
 )
 
-// Server 
-
-// Transport : tcp, udp,
-
 func main() {
-	fmt.Println("Hello, world.")
+	trLocal := network.NewLocalTransport("LOCAL")
+
+	opts := network.ServerOpts{
+		Transports: []network.Transport{trLocal},
+	}
+
+	srv := network.NewServer(opts)
 }
 
