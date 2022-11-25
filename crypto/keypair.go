@@ -21,7 +21,10 @@ func (k PrivateKey) Sign(data []byte) (*Signature, error) {
 		return nil, err
 	}
 
-	return &Signature{r, s}, nil
+	return &Signature{
+		r: r, 
+		s: s,
+		}, nil
 }
 
 func GeneratePrivateKey() *PrivateKey {
