@@ -26,3 +26,4 @@ func TestVerifyTransactionWithTamper(t *testing.T) {
 
 	assert.NotNil(t, tx.Verify())
 }
+   
