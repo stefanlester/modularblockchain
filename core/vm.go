@@ -2,7 +2,7 @@ package core
 
 import "encoding/binary"
 
-type Instructure byte
+type Instruction byte
 
 const (
 	InstrPushInt  Instruction = 0x0a

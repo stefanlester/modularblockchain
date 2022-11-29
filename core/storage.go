@@ -1,6 +1,6 @@
 package core
 
-type Storge interface {
+type Storage interface {
 	Put(*Block) error
 }
 
@@ -8,7 +8,7 @@ type MemoryStore struct {
 
 }
 
-func NewMemoryStore() *MemoryStore {
+func NewMemorystore() *MemoryStore {
 	return &MemoryStore{}
 }
 

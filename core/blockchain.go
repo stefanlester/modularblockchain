@@ -77,7 +77,7 @@ func (bc *Blockchain) handleNativeTransfer(tx *Transaction) error {
 		"value", tx.Value,
 	)
 
-	return bc.accountState.Transfer(tx.From, tx.To, tx.Value)
+	return bc.accountState.Transfer(tx.From.Address(), tx.To.Address(), tx.Value)
 }
 
 func (bc *Blockchain) handleNativeNFT(tx *Transaction) error {
