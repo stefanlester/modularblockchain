@@ -5,6 +5,8 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/hex"
+	"io"
 	"math/big"
 
 	"github.com/stefanlester/modularblockchain/types"
@@ -16,51 +18,64 @@ type PrivateKey struct {
 
 func (k PrivateKey) Sign(data []byte) (*Signature, error) {
 	r, s, err := ecdsa.Sign(rand.Reader, k.key, data)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return &Signature{
-		r: r, 
-		s: s,
-		}, nil
+		R: r,
+		S: s,
+	}, nil
 }
 
-func GeneratePrivateKey() *PrivateKey {
-	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-
+func NewPrivateKeyFromReader(r io.Reader) PrivateKey {
+	key, err := ecdsa.GenerateKey(elliptic.P256(), r)
 	if err != nil {
 		panic(err)
 	}
 
-	return &PrivateKey{key: key}
-}
-
-func (k PrivateKey) PublicKey() PublicKey {
-	return PublicKey{
-		key: &k.key.PublicKey,
+	return PrivateKey{
+		key: key,
 	}
 }
 
-type PublicKey struct {
-	key *ecdsa.PublicKey
+func GeneratePrivateKey() PrivateKey {
+	return NewPrivateKeyFromReader(rand.Reader)
 }
 
-func (k PublicKey) ToSlice() []byte {
-	return elliptic.MarshalCompressed(k.key, k.key.X, k.key.Y)
+func (k PrivateKey) PublicKey() PublicKey {
+	return elliptic.MarshalCompressed(k.key.PublicKey, k.key.PublicKey.X, k.key.PublicKey.Y)
+}
+
+type PublicKey []byte
+
+func (k PublicKey) String() string {
+	return hex.EncodeToString(k)
 }
 
 func (k PublicKey) Address() types.Address {
-	h := sha256.Sum256(k.ToSlice())
+	h := sha256.Sum256(k)
 
-	return types.NewAddressFromBytes(h[len(h)-20:])
+	return types.AddressFromBytes(h[len(h)-20:])
 }
 
 type Signature struct {
-	s, r *big.Int
+	S *big.Int
+	R *big.Int
+}
+
+func (sig Signature) String() string {
+	b := append(sig.S.Bytes(), sig.R.Bytes()...)
+	return hex.EncodeToString(b)
 }
 
 func (sig Signature) Verify(pubKey PublicKey, data []byte) bool {
-	return ecdsa.Verify(pubKey.key, data, sig.r, sig.s)
+	x, y := elliptic.UnmarshalCompressed(elliptic.P256(), pubKey)
+	key := &ecdsa.PublicKey{
+		Curve: elliptic.P256(),
+		X:     x,
+		Y:     y,
+	}
+
+	return ecdsa.Verify(key, data, sig.R, sig.S)
 }

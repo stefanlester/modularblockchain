@@ -12,7 +12,6 @@ func (a Address) ToSlice() []byte {
 	for i := 0; i < 20; i++ {
 		b[i] = a[i]
 	}
-
 	return b
 }
 
@@ -20,9 +19,9 @@ func (a Address) String() string {
 	return hex.EncodeToString(a.ToSlice())
 }
 
-func NewAddressFromBytes(b []byte) Address {
+func AddressFromBytes(b []byte) Address {
 	if len(b) != 20 {
-		msg := fmt.Sprintf("given bytes with length %d should be 32", len(b))
+		msg := fmt.Sprintf("given bytes with length %d should be 20", len(b))
 		panic(msg)
 	}
 
