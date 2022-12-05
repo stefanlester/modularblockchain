@@ -1,4 +1,5 @@
-package network
+
+package api
 
 import (
 	"encoding/gob"
