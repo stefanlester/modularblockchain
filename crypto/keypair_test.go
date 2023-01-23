@@ -17,6 +17,7 @@ func TestKeypairSignVerifySuccess(t *testing.T) {
 	assert.True(t, sig.Verify(publicKey, msg))
 }
 
+// test sign verify fail keypair
 func TestKeypairSignVerifyFail(t *testing.T) {
 	privKey := GeneratePrivateKey()
 	publicKey := privKey.PublicKey()

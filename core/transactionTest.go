@@ -31,7 +31,7 @@ func TestVerifyTransactionWithTamper(t *testing.T) {
 
 func TestNFTTransaction(t *testing.T) {
 	collectionTx := CollectionTx{
-		Fee:      200,
+		Fee:      600,
 		MetaData: []byte("The beginning of a new collection"),
 	}
 
