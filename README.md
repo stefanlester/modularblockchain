@@ -1,3 +1,3 @@
 # Modular-Blockchain
 
-A blockchain built from scratch with go lang 
+A modular production ready blockchain  built from scratch with go lang 
